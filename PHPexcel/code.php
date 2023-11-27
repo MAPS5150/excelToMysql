@@ -19,23 +19,27 @@
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileNamePath);
             $data = $spreadsheet->getActiveSheet()->toArray();
 
+            $counter = "0";
             foreach($data as $row){
-                $fullname = $row['0'];
-                $email = $row['1'];
-                $phone = $row['2'];
-                $course = $row['3'];
+                if($counter > 0){
+                    $fullname = $row['0'];
+                    $email = $row['1'];
+                    $phone = $row['2'];
+                    $course = $row['3'];
 
-                $Query = "SELECT * FROM `students` WHERE email='$email'";
-                $output = mysqli_query($con, $Query);
+                    $Query = "SELECT * FROM `students` WHERE email='$email'";
+                    $output = mysqli_query($con, $Query);
 
-                if(mysqli_num_rows($output) > 0){
+                    if(mysqli_num_rows($output) > 0){
 
+                    }else{
+                        $studentQuery = "INSERT INTO `students` (fullname, email, phone, course) VALUES ('$fullname', '$email', '$phone', '$course')";
+                        $result = mysqli_query($con, $studentQuery);
+                        $msg = true;
+                    }
                 }else{
-                    $studentQuery = "INSERT INTO `students` (fullname, email, phone, course) VALUES ('$fullname', '$email', '$phone', '$course')";
-                    $result = mysqli_query($con, $studentQuery);
-                    $msg = true;
+                    $counter = "1";
                 }
-
             }
             if(isset($msg)){
                 $_SESSION['message'] = "El archivo se importo exitosamente";
